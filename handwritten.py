@@ -29,10 +29,26 @@ pca = PCA(n_components=3)
 # n_components: PCA算法中所要保留的主成分个数n，也即保留下来的特征个数n
 
 # Fit and transform the data to the model
-# X_iso = pca.fit_transform(X_train)
+# Re_Dimension = pca.fit_transform(X_train)
 Re_Dimension = Isomap(n_neighbors=10).fit_transform(X_train)#主成份分析不同的地方是 Isomap 屬於非線性的降維方法。
 
 predicted = model.predict(X_train)
 
-print(svm.SVC(C=10, kernel='rbf', gamma=0.001).fit(X_train, y_train).score(X_test, y_test))
+print('準確率:',svm.SVC(C=10, kernel='rbf', gamma=0.001).fit(X_train, y_train).score(X_test, y_test))
 
+# 在 1x2 的網格上繪製子圖形
+fig, ax = plt.subplots(1, 2, figsize=(8, 4))
+
+# 調整外觀
+fig.subplots_adjust(top=0.85)
+
+# 繪製散佈圖 
+ax[0].scatter(Re_Dimension[:, 0], Re_Dimension[:, 1], c=predicted)
+ax[0].set_title('Predicted labels')
+ax[1].scatter(Re_Dimension[:, 0], Re_Dimension[:, 1], c=y_train)
+ax[1].set_title('Actual Labels')
+
+# 標題
+fig.suptitle('Predicted VS actual labels', fontsize=14, fontweight='bold')
+
+plt.show()
